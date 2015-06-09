@@ -9,9 +9,8 @@ targetCompatibility = 1.8
 
 jar {
     manifest {
-        attributes("Implementation-Title": project.name, "Implementation-Version": version, "Main-Class": 'Evolution')
+        attributes("Implementation-Title": project.name, "Implementation-Version": version, "Main-Class": 'com.falconraptor.evolution.Evolution')
     }
-    manifest.attributes provider: 'gradle'
 }
 
 repositories {
@@ -26,7 +25,9 @@ dependencies {
     compile fileTree(dir: 'lib', include: ['*.jar'])
 }
 
-task fatJar(type: Jar, dependsOn: build) {
+build.mustRunAfter clean
+
+task fatJar(type: Jar, dependsOn: [clean, build]) {
     manifest = jar.manifest
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
