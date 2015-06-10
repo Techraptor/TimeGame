@@ -1,5 +1,5 @@
 group 'falconraptor'
-version ''
+version 'A1.0'
 
 apply plugin: 'scala'
 apply plugin: 'idea'
