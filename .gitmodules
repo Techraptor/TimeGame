@@ -1,0 +1,3 @@
+[submodule "lib/utilites"]
+	path = lib/utilites
+	url = http://github.com/Techraptor/utilities
