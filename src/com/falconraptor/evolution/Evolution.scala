@@ -4,17 +4,19 @@ import java.net.URL
 import javax.swing.JOptionPane
 
 import com.falconraptor.evolution.player.Login
+import com.falconraptor.utilities.Shutdown
+import com.falconraptor.utilities.sql.SQL
 
 object Evolution {
 
   def main(args: Array[String]) {
     //TODO init globals if needed
     checkForInternet()
-    SQL connect("jdbc:mysql://techraptor.us", "techrapt_evoluti", "EV0lut1on", SQL mysql)
+    SQL getInstance() connect("jdbc:mysql://techraptor.us", "techrapt_evoluti", "EV0lut1on", SQL mysql)
     val shutdown = new Shutdown
     shutdown packagename = "Evolution"
     shutdown attachShutDownHook new Thread(new Runnable {
-      override def run() = SQL close()
+      override def run() = SQL getInstance() close()
     })
     //TODO create user login system
     Login setGUI()

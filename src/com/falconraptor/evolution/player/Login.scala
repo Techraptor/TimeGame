@@ -6,6 +6,8 @@ import java.security.MessageDigest
 import javax.swing._
 import javax.xml.bind.DatatypeConverter
 
+import com.falconraptor.utilities.sql.SQL
+
 object Login extends JFrame("Login") {
   def setGUI() {
     setDefaultCloseOperation(WindowConstants DISPOSE_ON_CLOSE)
@@ -23,7 +25,7 @@ object Login extends JFrame("Login") {
     val buttons = new JPanel(new GridLayout(1, 1, 0, 0))
     submit addActionListener new ActionListener {
       override def actionPerformed(e: ActionEvent) {
-        val stmt = SQL getStatement
+        val stmt = SQL getInstance() getStatement
         var id = -1
         val p = DatatypeConverter.printHexBinary(MessageDigest.getInstance("SHA-256").digest(pass.getPassword.toString.getBytes("UTF-8")))
         try {
