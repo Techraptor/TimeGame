@@ -2,10 +2,9 @@ package com.falconraptor.evolution.player
 
 import java.awt.GridLayout
 import java.awt.event.{ActionEvent, ActionListener}
-import java.security.MessageDigest
 import javax.swing._
-import javax.xml.bind.DatatypeConverter
 
+import com.falconraptor.evolution.Crypto
 import com.falconraptor.utilities.sql.SQL
 
 object Login extends JFrame("Login") {
@@ -27,16 +26,15 @@ object Login extends JFrame("Login") {
       override def actionPerformed(e: ActionEvent) {
         val stmt = SQL getInstance() getStatement
         var id = -1
-        val p = DatatypeConverter.printHexBinary(MessageDigest.getInstance("SHA-256").digest(pass.getPassword.toString.getBytes("UTF-8")))
+        val p = Crypto.encrypt(new String(pass.getPassword))
         try {
-          val rs = stmt executeQuery "SELECT * FROM techrapt_evolution.Users WHERE Username='" + user.getText + "' " +
-            "AND Password='" + p + "'"
+          val rs = stmt executeQuery "SELECT * FROM techrapt_evolution.Users WHERE Username='" + user.getText + "' " + "AND Password='" + p + "'"
           rs next()
           id = rs getInt "ID"
           rs close()
         } catch {
           case e: Exception =>
-            e printStackTrace()
+            //e printStackTrace()
             try {
               stmt executeUpdate "INSERT INTO techrapt_evolution.Users (ID,Username,Password) VALUES (NULL,'" + user.getText + "','" + p + "')"
               val rs = stmt executeQuery "SELECT * FROM techrapt_evolution.Users WHERE Username='" + user.getText + "' AND Password='" + p + "'"

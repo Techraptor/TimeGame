@@ -12,7 +12,7 @@ object Evolution {
   def main(args: Array[String]) {
     //TODO init globals if needed
     checkForInternet()
-    SQL getInstance() connect("jdbc:mysql://techraptor.us", "techrapt_evoluti", "EV0lut1on", SQL mysql)
+    SQL getInstance() connect("jdbc:mysql://162.249.6.37", "techrapt_evoluti", "EV0lut1on", SQL mysql)
     val shutdown = new Shutdown
     shutdown packagename = "Evolution"
     shutdown attachShutDownHook new Thread(new Runnable {
