@@ -27,7 +27,144 @@ object Login extends JFrame("Login") {
       override def actionPerformed(e: ActionEvent) {
         val stmt = SQL getInstance() getStatement
         var id = -1
+        /*
+        OLD CODE - HASH != ENCRYPTION
         val p = DatatypeConverter.printHexBinary(MessageDigest.getInstance("SHA-256").digest(pass.getPassword.toString.getBytes("UTF-8")))
+        */
+        /*
+        NEW CODE - Probably broken
+        val p = GameCryptology.toHexString(
+        			GameCryptology.getInstance().encrypt(
+        				GameCryptology.getAesCipher(),
+        				pass.getPassword.toString().getBytes()
+    				)
+    			);
+        */
+        /*
+        MODERNMAK CODE - Needs to be in new file
+		        
+		import java.util.*;
+		import java.io.*;
+		import java.util.Formatter;
+		import java.security.Key;
+		import java.security.NoSuchAlgorithmException;
+		import javax.crypto.Cipher;
+		import javax.crypto.spec.SecretKeySpec;
+		import javax.xml.bind.DatatypeConverter;
+		
+		class GameCryptology {
+		    private GameCryptology() {
+		        this("ABCDEFGHIJKLMNOP");
+		        //16 charachters long (A-Z,0-9), 128 bits
+		    }
+		
+		    private GameCryptology(String key) {
+		        myKey = key;
+		    }
+		
+		    private String
+		            myKey;
+		    public static final String
+		            AES_ENCRYPTION = "AES",
+		            BYTE_FORMATTING = "UTF-8";//128 bits
+		
+		    public Key getAesKey()  {
+		        return new SecretKeySpec(myKey.getBytes(), AES_ENCRYPTION);
+		    }
+		
+		    public static Cipher getAesCipher() throws NoSuchAlgorithmException {
+		    	try{
+		        	return Cipher.getInstance(AES_ENCRYPTION);
+		    	}
+		    	catch(Exception e){
+		    		System.out.println("Cipher not found!");
+		    		return null;
+		    	}
+		    }
+		
+		    public static String toHexString(byte[] array) {
+		        return DatatypeConverter.printHexBinary(array);
+		    }
+		
+		    public static byte[] toByteArray(String s) {
+		        return DatatypeConverter.parseHexBinary(s);
+		    }
+		
+		    public byte[] encrypt(Cipher cipher, String decrypted) {
+		    	return encrypt(cipher,this.getAesKey(),decrypted);
+		    }
+		    public static byte[] encrypt(Cipher cipher, Key key, String decrypted) {
+		        try {
+		            cipher.init(Cipher.ENCRYPT_MODE, key);
+		            return cipher.doFinal(decrypted.getBytes(BYTE_FORMATTING));
+		        } catch (Exception e) {
+		            //Do whatever you want with the excetption;
+		            return new byte[0];
+		        }
+		    }
+		
+		    public String decrypt(Cipher cipher, byte[] encrypted) {
+		        return decrypt(cipher, this.getAesKey(),encrypted);
+		    }
+		    public static String decrypt(Cipher cipher, Key key, byte[] encrypted) {
+		        try {
+		            cipher.init(Cipher.DECRYPT_MODE, key);
+		            return new String(cipher.doFinal(encrypted));
+		        } catch (Exception e) {
+		            //Do whatever you want with the excetption;
+		            return new String("");
+		        }
+		    }
+		
+		    private static GameCryptology myGameCryptology;
+		
+		    //Note to falconRaptor; singleton instantiate requires locking for threading.
+		    public static GameCryptology getInstance(String key) {
+		        //Lock aroung this
+		        if (myGameCryptology == null) {
+		            myGameCryptology = new GameCryptology(key);
+		        }
+		        //End locking
+		        return myGameCryptology;
+		    }
+		
+		    public static GameCryptology getInstance() {
+		        //Lock aroung this
+		        if (myGameCryptology == null) {
+		            myGameCryptology = new GameCryptology();
+		        }
+		        //End locking
+		        return myGameCryptology;
+		    }
+		
+		
+		    public static void main(String[] args) throws java.lang.Exception {
+				Scanner in = new Scanner(System.in);
+		
+		        String
+		                password = new String("!"),
+		                encryptedHex = new String("!!"),
+		                decrypted = new String("!!!");
+		
+				password = in.nextLine();
+		
+		        GameCryptology crypt = GameCryptology.getInstance();
+				Cipher cipher = GameCryptology.getAesCipher();
+		
+		
+		        byte[] encrypted = crypt.encrypt(cipher,password);
+		
+		        encryptedHex = crypt.toHexString(encrypted);
+		
+		        decrypted = crypt.decrypt(cipher,encrypted);
+		
+		        System.out.println("Password : " + password);
+		        System.out.println("Encrypted : " + encryptedHex);
+		        System.out.println("Decrypted : " + decrypted);
+		    }
+		}
+
+        */
         try {
           val rs = stmt executeQuery "SELECT * FROM techrapt_evolution.Users WHERE Username='" + user.getText + "' " +
             "AND Password='" + p + "'"
