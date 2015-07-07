@@ -18,9 +18,7 @@ object Evolution {
     shutdown attachShutDownHook new Thread(new Runnable {
       override def run() = SQL getInstance() close()
     })
-    //TODO create user login system
     Login setGUI()
-    //TODO use both database and file... file for playing and database for multiplayer
     //TODO load user's data
     //TODO init user's data if any else create
     //TODO start threads if needed
@@ -28,7 +26,7 @@ object Evolution {
 
   def checkForInternet() {
     try {
-      new URL("http://techraptor.us").openConnection.getInputStream
+      new URL("http://google.com").openConnection.getInputStream
     } catch {
       case e: Exception =>
         JOptionPane showMessageDialog(null, "You need internet to play this game!", "No Internet", JOptionPane ERROR_MESSAGE)
